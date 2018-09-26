@@ -18,27 +18,27 @@
 
     <script>
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/500, 0.1, 1000 );  
+    var camera = new THREE.PerspectiveCamera( 100, window.innerWidth/850, 0.1, 1000 );  
     var renderer = new THREE.WebGLRenderer();
     var object;
-    var radius = 100;
-    var theta = 0;
+
+
+    // Add controls
+    var controls = new THREE.OrbitControls(camera);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.25;
+    controls.enableZoom = true;
+    controls.autoRotate = true;
+
+
     init();
     animate();
 
     function init(){
         camera.position.z = 75;
-        renderer.setSize( window.innerWidth, 500 );
+        renderer.setSize( window.innerWidth, 850 );
         document.body.appendChild( renderer.domElement );
 
-        // Add controls
-        var controls = new THREE.OrbitControls(camera, renderer.domElement);
-        controls.enableDamping = true;
-        controls.dampingFactor = 0.25;
-        controls.enableZoom = true;
-        controls.update();
-
-    
         // Load the light
         var keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
         keyLight.position.set(-100, 0, 100);
@@ -65,24 +65,18 @@
             objLoader.setMaterials(materials);
             objLoader.setPath('assets/bmw-75/');
             objLoader.load('BMW_75.obj', function (object) {
-                    object.position.y -= 40;
+                    object.position.y -= 30;
                     scene.add(object);
             });
         });
     }
     function animate () {    
         requestAnimationFrame( animate );
+        controls.update();
         render();
     }
 
-    function render() {
-        theta += 0.1;
-        camera.position.x = radius * Math.sin( THREE.Math.degToRad( theta ) );
-        camera.position.y = radius * Math.sin( THREE.Math.degToRad( theta ) );
-        camera.position.z = radius * Math.cos( THREE.Math.degToRad( theta ) );
-        camera.lookAt( scene.position );
-        camera.updateMatrixWorld();
-                
+    function render() {                
         renderer.render( scene, camera );
     }
 
